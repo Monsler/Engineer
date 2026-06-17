@@ -1,10 +1,16 @@
 use std::sync::Arc;
-
 use teloxide::prelude::*;
-
 use crate::net::G4Free;
+
 pub mod net;
 pub mod bot;
+
+/*
+------------------------------
+The entry point for every bot
+Coded by Monsler at 16/06/2026
+------------------------------
+*/
 
 async fn dispatch_message(bot: &Bot, message: &str, engineer: &bot::Engineer<'_, '_>) {
     if message.starts_with("/report") {

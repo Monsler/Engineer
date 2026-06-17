@@ -1,5 +1,12 @@
 use crate::net;
 
+/*
+------------------------------
+Engineer needed infrastructure
+Coded by Monsler at 17/06/2026
+------------------------------
+*/
+
 pub struct Engineer<'llm, 'a> {
     core: Box<dyn net::LLMCore<'llm, 'a> + Send + Sync>,
 }
