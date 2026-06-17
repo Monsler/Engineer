@@ -2,7 +2,7 @@
 
 # How to run?
 
-Since it is coded on teloxide, firstly we have to initialize our token for teloxide to listen it:
+Since it is coded on teloxide, firstly we have to initialize our token for teloxide to listen to it:
 
 ```bash
 # Unix-like

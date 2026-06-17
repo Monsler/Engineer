@@ -8,39 +8,59 @@ Coded by Monsler at 16/06/2026
 --------------------------------------------------
 */
 
-trait LLMCore<'llm> {
+pub trait LLMCore<'llm, 'a> {
     fn prompt(&mut self, request: &str);
     fn clear_context(&mut self);
-    fn set_system_prompt(prompt: &str);
+    fn set_system_prompt(&mut self, prompt: &str);
     fn history(&self) -> &Value;
+    fn set_api_key(&mut self, key: &'a str);
 }
 
-struct G4Free {
-    context: Value
+pub struct G4Free<'a> {
+    context: Value,
+    api_key: &'a str
 }
 
-impl G4Free {
-    pub fn new() -> Self {
-        Self { context: json!([]) }
+impl<'a> G4Free<'a> {
+    pub fn new(api_key: &'a str) -> Self {
+        Self { context: json!([]), api_key }
     }
+    
+    fn receive_array(&mut self) -> &mut Vec<Value> {
+        if !self.context.is_array() {
+            self.context = json!([]);
+        }
+
+        self.context.as_array_mut().unwrap()
+    }
+
 }
 
-impl<'llm, 'a> LLMCore<'llm> for G4Free {
+impl<'llm, 'a> LLMCore<'llm, 'a> for G4Free<'a> {
     fn prompt(&mut self, request: &str) {
-        if let Some(array) = self.context.as_array_mut() {
-            array.push(json!({
+       let array = self.receive_array();
+
+       array.push(json!({
                 "role": "user",
                 "content": request
-            }))
-        }
+        }))
+    }
+
+    fn set_api_key(&mut self, key: &'a str) {
+        self.api_key = key;
     }
 
     fn clear_context(&mut self) {
         self.context = json!([]);
     }
 
-    fn set_system_prompt(prompt: &str) {
-        todo!()
+    fn set_system_prompt(&mut self, prompt: &str) {
+        let array = self.receive_array();
+        
+        array.insert(0, json!({
+            "role": "system",
+            "content": prompt
+        }));
     }
 
     fn history(&self) -> &Value {
